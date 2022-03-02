@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Minecraft Spot Price Server via Docker / ECS
+Description: COD4 Spot Price Server via Docker / ECS
 Parameters:
 
   ECSAMI:
@@ -9,7 +9,7 @@ Parameters:
 
   ServerState:
     Type: String
-    Description: "Running: A spot instance will launch shortly after setting this parameter; your Minecraft server should start within 5-10 minutes of changing this parameter (once UPDATE_IN_PROGRESS becomes UPDATE_COMPLETE). Stopped: Your spot instance (and thus Minecraft container) will be terminated shortly after setting this parameter."
+    Description: "Running: A spot instance will launch shortly after setting this parameter; your COD4 server should start within 5-10 minutes of changing this parameter (once UPDATE_IN_PROGRESS becomes UPDATE_COMPLETE). Stopped: Your spot instance (and thus COD4 container) will be terminated shortly after setting this parameter."
     Default: Running
     AllowedValues:
       - Running
@@ -42,96 +42,18 @@ Parameters:
 
   HostedZoneId:
     Type: String
-    Description: (Optional - An empty value disables this feature) If you have a hosted zone in Route 53 and wish to set a DNS record whenever your Minecraft instance starts, supply the hosted zone ID here.
+    Description: (Optional - An empty value disables this feature) If you have a hosted zone in Route 53 and wish to set a DNS record whenever your COD4 instance starts, supply the hosted zone ID here.
     Default: ''
 
   RecordName:
     Type: String
-    Description: (Optional - An empty value disables this feature) If you have a hosted zone in Route 53 and wish to set a DNS record whenever your Minecraft instance starts, supply the name of the record here (e.g. minecraft.mydomain.com).
-    Default: ''
-
-  MinecraftImageTag:
-    Type: String
-    Description: "Java version (Examples include latest, adopt13, openj9, etc) Refer to tag descriptions available here: https://github.com/itzg/docker-minecraft-server)"
-    Default: 'latest'
-
-  MinecraftTypeTag:
-    Type: String
-    Description: "(Examples include SPIGOT, BUKKIT, TUINITY, etc) Refer to tag descriptions available here: https://github.com/itzg/docker-minecraft-server)"
-
-  AdminPlayerNames:
-    Type: String
-    Description: Op/Administrator Players
-    Default: ''
-
-  Difficulty:
-    Type: String
-    Description: "The game's difficulty"
-    Default: normal
-    AllowedValues:
-      - peaceful
-      - easy
-      - normal
-      - hard
-
-  Whitelist:
-    Type: String
-    Description: Usernames of your friends
+    Description: (Optional - An empty value disables this feature) If you have a hosted zone in Route 53 and wish to set a DNS record whenever your COD4 instance starts, supply the name of the record here (e.g. cod4.mydomain.com).
     Default: ''
 
   MinecraftVersion:
     Type: String
     Description: Server minecraft version
     Default: ''
-
-  Memory:
-    Type: String
-    Description: How much Memory to allocate for the JVM
-    Default: '1G'
-
-  Seed:
-    Type: String
-    Description: The seed used to generate the world
-
-  MaxPlayers:
-    Type: Number
-    Description: Max number of players that can connect simultaneously (default 20)
-
-  ViewDistance:
-    Type: Number
-    Description: Max view radius (in chunks) the server will send to the client (default 10)
-
-  GameMode:
-    Type: String
-    Description: "Options: creative, survival (default), adventure, spectator (v1.8+)"
-    Default: survival
-    AllowedValues:
-      - creative
-      - survival
-      - adventure
-      - spectator
-
-  LevelType:
-    Type: String
-    Description: "Options: DEFAULT, FLAT, LARGEBIOMES, AMPLIFIED, CUSTOMIZED, BUFFET, BIOMESOP (v1.12-), BIOMESOPLENTY (v1.15+)"
-    Default: DEFAULT
-    AllowedValues:
-      - DEFAULT
-      - FLAT
-      - LARGEBIOMES
-      - AMPLIFIED
-      - CUSTOMIZED
-      - BUFFET
-      - BIOMESOP
-      - BIOMESOPLENTY
-
-  EnableRollingLogs:
-    Type: String
-    Description: "By default the log file will grow without limit. Set to true to use a rolling log strategy."
-    Default: false
-    AllowedValues:
-      - true
-      - false
 
   Timezone:
     Type: String
@@ -147,24 +69,9 @@ Metadata:
           - InstanceType
           - SpotPrice
       - Label:
-          default: Server Settings
-        Parameters:
-          - MinecraftImageTag
-      - Label:
           default: Optional Server Settings
         Parameters:
-          - MinecraftTypeTag
-          - AdminPlayerNames
-          - Difficulty
-          - Whitelist
           - MinecraftVersion
-          - Memory
-          - Seed
-          - MaxPlayers
-          - ViewDistance
-          - GameMode
-          - LevelType
-          - EnableRollingLogs
           - Timezone
       - Label:
           default: Optional Remote Access (SSH) Configuration
@@ -179,21 +86,11 @@ Metadata:
           - RecordName
     ParameterLabels:
       ServerState:
-        default: "Update this parameter to shut down / start up your Minecraft server as required to save on cost. Takes a few minutes to take effect."
+        default: "Update this parameter to shut down / start up your COD4 server as required to save on cost. Takes a few minutes to take effect."
       InstanceType:
         default: "Which instance type? You must make sure this is available in your region! https://aws.amazon.com/ec2/pricing/on-demand/"
       SpotPrice:
         default: "Maximum spot price per hour? Leave blank to disable spot pricing."
-      MinecraftImageTag:
-        default: "Which version of Minecraft do you want to launch?"
-      MinecraftTypeTag:
-        default: "Which type of Minecraft do you want to launch?"
-      AdminPlayerNames:
-        default: "A comma delimited list (no spaces) of player names to be admins"
-      Difficulty:
-        default: "Which difficulty?"
-      Whitelist:
-        default: "A comma delimited list (no spaces) of player names"
       MinecraftVersion:
         default: "Minecraft version ie 1.16.3"
       KeyPairName:
@@ -203,46 +100,18 @@ Metadata:
       YourIPv6:
         default: "If you wish to access the instance via SSH and using IPv6, provide it."
       HostedZoneId:
-        default: "If you have a hosted zone in Route 53 and wish to update a DNS record whenever your Minecraft instance starts, supply the hosted zone ID here."
+        default: "If you have a hosted zone in Route 53 and wish to update a DNS record whenever your COD4 instance starts, supply the hosted zone ID here."
       RecordName:
-        default: "If you have a hosted zone in Route 53 and wish to set a DNS record whenever your Minecraft instance starts, supply a record name here (e.g. minecraft.mydomain.com)."
-      Memory:
-        default: "If you wish to increase the Java memory-heap limit of 1GB. Format: <size>[g|G|m|M|k|K]"
-      Seed:
-        default: "Seed for world generation"
-      MaxPlayers:
-        default: "Max simultaneous players"
-      ViewDistance:
-        default: "Max view distance"
-      GameMode:
-        default: "The Minecraft game mode"
-      LevelType:
-        default: "Level type for world generation"
-      EnableRollingLogs:
-        default: "Whether to enable rolling logs"
+        default: "If you have a hosted zone in Route 53 and wish to set a DNS record whenever your COD4 instance starts, supply a record name here (e.g. minecraft.mydomain.com)."
       Timezone:
         default: "The server's timezone"
 
 Conditions:
-  MinecraftTypeTagProvided: !Not [ !Equals [ !Ref MinecraftTypeTag, '' ] ]
-  AdminPlayerNamesProvided: !Not [ !Equals [ !Ref AdminPlayerNames, '' ] ]
-  DifficultyProvided: !Not [ !Equals [ !Ref Difficulty, '' ] ]
-  WhitelistProvided: !Not [ !Equals [ !Ref Whitelist, '' ] ]
-  MinecraftVersionProvided: !Not [ !Equals [ !Ref MinecraftVersion, '' ] ]
   KeyPairNameProvided: !Not [ !Equals [ !Ref KeyPairName, '' ] ]
   IPv4AddressProvided: !Not [ !Equals [ !Ref YourIPv4, '' ] ]
   IPv6AddressProvided: !Not [ !Equals [ !Ref YourIPv6, '' ] ]
   DnsConfigEnabled: !And [ !Not [ !Equals [ !Ref HostedZoneId, '' ] ], !Not [ !Equals [ !Ref RecordName, '' ] ] ]
   SpotPriceProvided: !Not [ !Equals [ !Ref SpotPrice, '' ] ]
-  MemoryProvided: !Not [ !Equals [ !Ref Memory, '' ] ]
-  SeedProvided: !Not [ !Equals [ !Ref Seed, '' ] ]
-  MaxPlayersProvided: !Not [ !Equals [ !Ref MaxPlayers, '' ] ]
-  ViewDistanceProvided: !Not [ !Equals [ !Ref ViewDistance, '' ] ]
-  GameModeProvided: !Not [ !Equals [ !Ref GameMode, '' ] ]
-  LevelTypeProvided: !Not [ !Equals [ !Ref LevelType, '' ] ]
-  EnableRollingLogsProvided: !Not [ !Equals [ !Ref EnableRollingLogs, '' ] ]
-  TimezoneProvided: !Not [ !Equals [ !Ref Timezone, '' ] ]
-
 
 Mappings:
   ServerState:
@@ -380,8 +249,16 @@ Resources:
             IpProtocol: tcp
             CidrIpv6: !Sub "${YourIPv6}/128"
           - !Ref 'AWS::NoValue'
-        - FromPort: 25565
-          ToPort: 25565
+        - FromPort: 28960
+          ToPort: 28960
+          IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+        - FromPort: 28960
+          ToPort: 28960
+          IpProtocol: udp
+          CidrIp: 0.0.0.0/0
+        - FromPort: 8000
+          ToPort: 8000
           IpProtocol: tcp
           CidrIp: 0.0.0.0/0
       VpcId: !Ref Vpc
@@ -403,9 +280,11 @@ Resources:
           #!/bin/bash -xe
           echo ECS_CLUSTER=${EcsCluster} >> /etc/ecs/ecs.config
           yum install -y amazon-efs-utils
-          mkdir /opt/minecraft
-          mount -t efs ${Efs}:/ /opt/minecraft
-          chown 845:845 /opt/minecraft
+          echo "options nfs enable_ino64=0" > /etc/modprobe.d/nfs.conf
+          echo "N" | tee /sys/modules/nfs/parameters/enable_ino64 || true
+          mkdir /opt/cod4
+          mount -t efs ${Efs}:/ /opt/cod4
+          chown 1000:1000 /opt/cod4
 
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -434,7 +313,7 @@ Resources:
                 - cloudformation.amazonaws.com
             Action:
               - sts:AssumeRole
-      Policies:
+      Policies: # TODO this is not needed anymore (no dashboards)
         - PolicyName: root
           PolicyDocument:
             Version: "2012-10-17"
@@ -523,91 +402,51 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Volumes:
-        - Host:
-            SourcePath: /opt/minecraft
-          Name: minecraft
+        - Name: cod4-main
+          Host:
+            SourcePath: /opt/cod4/main
+        - Name: cod4-zone
+          Host:
+            SourcePath: /opt/cod4/zone
+        - Name: cod4-mods
+          Host:
+            SourcePath: /opt/cod4/mods
+        - Name: cod4-usermaps
+          Host:
+            SourcePath: /opt/cod4/usermaps
       ContainerDefinitions:
-        - Name: minecraft
-          MemoryReservation: 1024
-          Image: !Sub "itzg/minecraft-server:${MinecraftImageTag}"
+        - Name: cod4
+          MemoryReservation: 768 # TODO: check
+          Image: qmcgaw/cod4 # TODO update image
+          Command:
+            - "+set dedicated 2"
+            #- "+set nep_ip 15.228.98.239" # TODO attempt to set this to elastic ip
+            - "+set net_port 28960"
+            - "+set sv_punkbuster 1"
+            - "+set fs_game mods/pml220_denerd_rev3"
+            - "+exec server.cfg"
+            - "+set rcon_password potato123"
+            - "+map_rotate"
           PortMappings:
-            - ContainerPort: 25565
-              HostPort: 25565
+            - ContainerPort: 28960
+              HostPort: 28960
+              Protocol: tcp
+            - ContainerPort: 28960
+              HostPort: 28960
+              Protocol: udp
+            - ContainerPort: 8000
+              HostPort: 8000
               Protocol: tcp
           MountPoints:
-            - ContainerPath: /data
-              SourceVolume: minecraft
-              ReadOnly: false
-          Environment:
-            - Name: "EULA"
-              Value: "TRUE"
-            - Name: "INIT_MEMORY"
-              Value: "512M"
-            - !If
-              - MinecraftTypeTagProvided
-              - Name: "TYPE"
-                Value: !Sub "${MinecraftTypeTag}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - AdminPlayerNamesProvided
-              - Name: "OPS"
-                Value: !Sub "${AdminPlayerNames}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - DifficultyProvided
-              - Name: "DIFFICULTY"
-                Value: !Sub "${Difficulty}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - WhitelistProvided
-              - Name: "WHITELIST"
-                Value: !Sub "${Whitelist}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - MinecraftVersionProvided
-              - Name: "VERSION"
-                Value: !Sub "${MinecraftVersion}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - MemoryProvided
-              - Name: "MAX_MEMORY"
-                Value: !Sub "${Memory}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - SeedProvided
-              - Name: "SEED"
-                Value: !Sub "${Seed}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - MaxPlayersProvided
-              - Name: "MAX_PLAYERS"
-                Value: !Sub "${MaxPlayers}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - ViewDistanceProvided
-              - Name: "VIEW_DISTANCE"
-                Value: !Sub "${ViewDistance}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - GameModeProvided
-              - Name: "MODE"
-                Value: !Sub "${GameMode}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - LevelTypeProvided
-              - Name: "LEVEL_TYPE"
-                Value: !Sub "${LevelType}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - EnableRollingLogsProvided
-              - Name: "ENABLE_ROLLING_LOGS"
-                Value: !Sub "${EnableRollingLogs}"
-              - !Ref 'AWS::NoValue'
-            - !If
-              - TimezoneProvided
-              - Name: "TZ"
-                Value: !Sub "${Timezone}"
-              - !Ref 'AWS::NoValue'
+            - ContainerPath: /home/user/cod4/main
+              SourceVolume: cod4-main
+            - ContainerPath: /home/user/cod4/zone
+              SourceVolume: cod4-zone
+            - ContainerPath: /home/user/cod4/mods
+              SourceVolume: cod4-mods
+            - ContainerPath: /home/user/cod4/usermaps
+              SourceVolume: cod4-usermaps
+              ReadOnly: true
 
   # ====================================================
   # SET DNS RECORD
@@ -674,7 +513,7 @@ Resources:
                       },
                   ]
               })
-      Description: Sets Route 53 DNS Record for Minecraft
+      Description: Sets Route 53 DNS Record for COD4
       FunctionName: !Sub "${AWS::StackName}-set-dns"
       Handler: index.handler
       MemorySize: 128
@@ -711,5 +550,5 @@ Resources:
 
 Outputs:
   CheckInstanceIp:
-    Description: To find your Minecraft instance IP address, visit the following link. Click on the instance to find its Public IP address.
+    Description: To find your COD4 instance IP address, visit the following link. Click on the instance to find its Public IP address.
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/ec2/v2/home?region=${AWS::Region}#Instances:tag:aws:autoscaling:groupName=${AutoScalingGroup};sort=tag:Name"
